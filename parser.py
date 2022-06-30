@@ -66,6 +66,8 @@ def load_data(data_folder):
     if '_HUMAN' not in entry_name or primary_id == '':
       continue
 
+    row['_id'] = row['object']['BindingDB Reactant_set_id']
+
     yield row
 
 def main():
@@ -75,10 +77,10 @@ def main():
   tim = time()
 
   for row in load_data('./'):
-    if cnt == 2:
+    if cnt == 12000:
+      print('Writing record to file')
       with open("record.json", "w") as r:
         json.dump(row, r, indent=2)
-      break
 
     cnt += 1
     if cnt % 100000 == 0:
