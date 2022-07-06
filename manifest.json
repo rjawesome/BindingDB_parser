@@ -1,0 +1,18 @@
+{
+  "version": "0.2",
+  "__metadata__": {
+      "url": "https://www.bindingdb.org/rwd/bind/index.jsp"
+  },
+  "author" : {
+    "name" : "Rohan Juneja",
+    "url" : "https://github.com/rjawesome"
+  },
+  "dumper" : {
+      "data_url" : ["https://www.bindingdb.org/bind/downloads/BindingDB_All_2022m5.tsv.zip"],
+      "uncompress" : true
+  },
+  "uploader" : {
+      "parser" : "parser:load_data",
+      "on_duplicates": "error"
+  }
+}
