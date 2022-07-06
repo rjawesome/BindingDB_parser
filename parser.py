@@ -12,7 +12,7 @@ EXTRA_SUBJECT_COLS = {'Target Name Assigned by Curator or DataSource', 'Target S
 
 INT_FIELDS = {"BindingDB Reactant_set_id", "BindingDB MonomerID",  "PubChem CID", "PubChem SID", "Number of Protein Chains in Target (>1 implies a multichain complex)"}
 SPLIT_FIELDS = {"PDB ID(s) of Target Chain", "UniProt (SwissProt) Secondary ID(s) of Target Chain", "UniProt (SwissProt) Alternative ID(s) of Target Chain", "UniProt (TrEMBL) Secondary ID(s) of Target Chain", "UniProt (TrEMBL) Alternative ID(s) of Target Chain"}
-
+SEMICOLON_SPLIT_FIELDS = {"Authors"}
 
 KEY_MAP = {
   "Binding DB Reactant_set_id": "id"
@@ -37,6 +37,8 @@ def process_field(field_name: str, value: str):
     return int(value)
   if field_name in SPLIT_FIELDS:
     return value.split(',')
+  if field_name in SEMICOLON_SPLIT_FIELDS:
+    return value.split('; ')
   
   return value
 
