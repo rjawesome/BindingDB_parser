@@ -129,6 +129,7 @@ def load_data(data_folder):
       continue
 
     row['_id'] = f"{row['object']['BindingDB MonomerID']}-{row['subject']['UniProt (SwissProt) Primary ID of Target Chain']}"
+    row['predicate'] = 'physically interacts with'
 
     if row['_id'] in docs:
       merge(docs[row['_id']], row)
