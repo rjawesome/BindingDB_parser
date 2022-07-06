@@ -11,7 +11,7 @@ RELATION_COLS = {"BindingDB Reactant_set_id", 'Ki (nM)', 'IC50 (nM)', 'Kd (nM)',
 EXTRA_SUBJECT_COLS = {'Target Name Assigned by Curator or DataSource', 'Target Source Organism According to Curator or DataSource', 'Link to Target in BindingDB'}
 
 INT_FIELDS = {"BindingDB Reactant_set_id", "BindingDB MonomerID",  "PubChem CID", "PubChem SID", "Number of Protein Chains in Target (>1 implies a multichain complex)"}
-SPLIT_FIELDS = {"PDB ID(s) of Target Chain", "UniProt (SwissProt) Secondary ID(s) of Target Chain", "UniProt (SwissProt) Alternative ID(s) of Target Chain", "UniProt (TrEMBL) Secondary ID(s) of Target Chain", "UniProt (TrEMBL) Alternative ID(s) of Target Chain"}
+SPLIT_FIELDS = {"PDB ID(s) of Target Chain", "UniProt (SwissProt) Secondary ID(s) of Target Chain", "UniProt (SwissProt) Alternative ID(s) of Target Chain", "UniProt (TrEMBL) Secondary ID(s) of Target Chain", "UniProt (TrEMBL) Alternative ID(s) of Target Chain", "PDB ID(s) for Ligand-Target Complex"}
 SEMICOLON_SPLIT_FIELDS = {"Authors"}
 
 KEY_MAP = {
@@ -152,7 +152,7 @@ def main():
   diffset = {}
 
   for row in load_data('./'):
-    if (row["_id"] == "6221-P24941"):
+    if (row["_id"] == "3149-P17252"):
       print('Writing record to file')
       with open("record.json", "w") as r:
         json.dump(row, r, indent=2)
