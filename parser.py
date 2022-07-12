@@ -148,8 +148,8 @@ def load_data(data_folder):
     else:
       docs[row['_id']] = arrayify(row)
 
-    if row_num >= 15000:
-      break
+    # if row_num >= 15000:
+    #   break
     row_num += 1
 
   for doc_id in docs:
