@@ -1,45 +1,56 @@
 import csv
 import json
+from redis import ReadOnlyError
 import ujson
 import os
-import copy
-
 
 REPEAT_SUBJECT_COLS = ['BindingDB Target Chain  Sequence', 'PDB ID(s) of Target Chain', 'UniProt (SwissProt) Recommended Name of Target Chain', 'UniProt (SwissProt) Entry Name of Target Chain', 'UniProt (SwissProt) Primary ID of Target Chain', 'UniProt (SwissProt) Secondary ID(s) of Target Chain', 'UniProt (SwissProt) Alternative ID(s) of Target Chain', 'UniProt (TrEMBL) Submitted Name of Target Chain', 'UniProt (TrEMBL) Entry Name of Target Chain', 'UniProt (TrEMBL) Primary ID of Target Chain', 'UniProt (TrEMBL) Secondary ID(s) of Target Chain', 'UniProt (TrEMBL) Alternative ID(s) of Target Chain']
 BASE_COLS = ['BindingDB Reactant_set_id', 'Ligand SMILES', 'Ligand InChI', 'Ligand InChI Key', 'BindingDB MonomerID', 'BindingDB Ligand Name', 'Target Name Assigned by Curator or DataSource', 'Target Source Organism According to Curator or DataSource', 'Ki (nM)', 'IC50 (nM)', 'Kd (nM)', 'EC50 (nM)', 'kon (M-1-s-1)', 'koff (s-1)', 'pH', 'Temp (C)', 'Curation/DataSource', 'Article DOI', 'PMID', 'PubChem AID', 'Patent Number', 'Authors', 'Institution', 'Link to Ligand in BindingDB', 'Link to Target in BindingDB', 'Link to Ligand-Target Pair in BindingDB', 'Ligand HET ID in PDB', 'PDB ID(s) for Ligand-Target Complex', 'PubChem CID', 'PubChem SID', 'ChEBI ID of Ligand', 'ChEMBL ID of Ligand', 'DrugBank ID of Ligand', 'IUPHAR_GRAC ID of Ligand', 'KEGG ID of Ligand', 'ZINC ID of Ligand', 'Number of Protein Chains in Target (>1 implies a multichain complex)']
-RELATION_COLS = {"BindingDB Reactant_set_id", 'Ki (nM)', 'IC50 (nM)', 'Kd (nM)', 'EC50 (nM)', 'kon (M-1-s-1)', 'koff (s-1)', 'pH', 'Temp (C)', 'Curation/DataSource', 'Article DOI', 'PMID', 'PubChem AID', 'Patent Number', 'Authors', 'Institution', 'Link to Ligand-Target Pair in BindingDB', 'PDB ID(s) for Ligand-Target Complex', 'Number of Protein Chains in Target (>1 implies a multichain complex)'}
-EXTRA_SUBJECT_COLS = {'Target Name Assigned by Curator or DataSource', 'Target Source Organism According to Curator or DataSource', 'Link to Target in BindingDB'}
+COLUMN_DATA = ujson.load(open("./mappings.json"))['columns']
 
-INT_FIELDS = {"BindingDB Reactant_set_id", "BindingDB MonomerID",  "PubChem CID", "PubChem SID", "Number of Protein Chains in Target (>1 implies a multichain complex)"}
-SPLIT_FIELDS = {"PDB ID(s) of Target Chain", "UniProt (SwissProt) Secondary ID(s) of Target Chain", "UniProt (SwissProt) Alternative ID(s) of Target Chain", "UniProt (TrEMBL) Secondary ID(s) of Target Chain", "UniProt (TrEMBL) Alternative ID(s) of Target Chain", "PDB ID(s) for Ligand-Target Complex"}
-SEMICOLON_SPLIT_FIELDS = {"Authors"}
+def append_field(doc: dict, key: str, value: any):
+  key_path = COLUMN_DATA[key]['location']
+  keys = key_path.split('.')
+  key_ref = doc
+  for i in keys[:len(keys)-1]:
+    key_ref = key_ref[i]
+  key_ref[keys[-1]].append(value)
 
-KEY_MAP = {
-  "Binding DB Reactant_set_id": "id"
-}
+def set_field(doc: dict, key: str, value: any):
+  key_path = COLUMN_DATA[key]['location']
+  keys = key_path.split('.')
+  key_ref = doc
+  for i in keys[:len(keys)-1]:
+    key_ref = key_ref[i]
+  key_ref[keys[-1]] = value
 
-SUBJECT_DUPL_FIELDS = {"Target Name Assigned by Curator or DataSource", "Link to Target in BindingDB", "UniProt (TrEMBL) Primary ID of Target Chain", "Target Source Organism According to Curator or DataSource", "PDB ID(s) of Target Chain", "UniProt (SwissProt) Recommended Name of Target Chain"}
-OBJECT_DUPL_FIELDS = {"BindingDB Ligand Name", "KEGG ID of Ligand", "Ligand HET ID in PDB"}
-
-
-def map_key(key: str):
-  return key
+def get_field(doc: dict, key: str):
+  key_path = COLUMN_DATA[key]['location']
+  keys = key_path.split('.')
+  val = doc
+  try:
+    for i in keys:
+      val = val[i]
+    return val
+  except KeyError:
+    return None
 
 def special_copy(base_dict):
   ret = {}
   ret['subject'] = base_dict['subject'].copy()
   ret['object'] = base_dict['object'].copy()
   ret['relation'] = base_dict['relation'].copy()
+  ret['subject']['uniprot'] = {}
   return ret
 
 def process_field(field_name: str, value: str):
-  if field_name in INT_FIELDS:
+  field_type = COLUMN_DATA[field_name]['type']
+  if field_type == "int":
     return int(value)
-  if field_name in SPLIT_FIELDS:
+  if field_type == "split_comma":
     return value.split(',')
-  if field_name in SEMICOLON_SPLIT_FIELDS:
+  if field_type == "split_semicolon":
     return value.split('; ')
-  
   return value
 
 def read_csv(file: str, delim: str):
@@ -55,70 +66,71 @@ def read_csv(file: str, delim: str):
       else:
         base = {'object': {}, 'subject': {}, 'relation': {}}
         for j in range(37):
-          if row[j] != None and row[j] != '':
+          if row[j] != None and row[j] != '' and row[j] != 'NULL':
             val = process_field(BASE_COLS[j], row[j])
-            if BASE_COLS[j] in RELATION_COLS:
-              base['relation'][map_key(BASE_COLS[j])] = val
-            elif BASE_COLS[j] in EXTRA_SUBJECT_COLS:
-              base['subject'][map_key(BASE_COLS[j])] = val
-            else:
-              base['object'][map_key(BASE_COLS[j])] = val
+            set_field(base, BASE_COLS[j], val)
         
         repeats = int(row[36]) # Number of Protein Chains in Target
         pos = 37
         for j in range(repeats):
-          info = special_copy(base)
+          info_1 = special_copy(base)
+          info_2 = special_copy(base)
+          info_1['subject']['uniprot']['type'] = 'swissprot'
+          info_2['subject']['uniprot']['type'] = 'trembl'
           for k in range(12):
             if row[pos] != None and row[pos] != '':
               val = process_field(REPEAT_SUBJECT_COLS[k], row[pos])
-              info['subject'][map_key(REPEAT_SUBJECT_COLS[k])] = val
+              if COLUMN_DATA[REPEAT_SUBJECT_COLS[k]]['uniprot_type'] == 'swissprot':
+                set_field(info_1, REPEAT_SUBJECT_COLS[k], val)
+              elif COLUMN_DATA[REPEAT_SUBJECT_COLS[k]]['uniprot_type'] == 'trembl':
+                set_field(info_2, REPEAT_SUBJECT_COLS[k], val)
+              else:
+                set_field(info_1, REPEAT_SUBJECT_COLS[k], val)
+                set_field(info_2, REPEAT_SUBJECT_COLS[k], val)
             pos += 1
-          yield info
+          yield info_1
+          yield info_2
 
 def arrayify(obj: dict[str, any]):
-  for key in SUBJECT_DUPL_FIELDS:
-    if key in obj['subject']:
-      obj['subject'][key] = [obj['subject'][key]]
-  
-  for key in OBJECT_DUPL_FIELDS:
-    if key in obj['object']:
-      obj['object'][key] = [obj['object'][key]]
+  for col in COLUMN_DATA:
+    if COLUMN_DATA[col]['has_duplicates'] != True:
+      continue
+    if COLUMN_DATA[col]['uniprot_type'] != 'all' and COLUMN_DATA[col]['uniprot_type'] != obj['subject']['uniprot']['type']:
+      continue
+    if get_field(obj, col) != None:
+      f = get_field(obj, col)
+      if isinstance(f, list):
+        f = f.copy()
+      set_field(obj, col, [f])
   
   obj['relation'] = [obj['relation']]
   return obj
 
 def merge(main: dict[str, any], other: dict[str, any]):
-  for key in SUBJECT_DUPL_FIELDS:
-    m = main['subject']
-    o = other['subject']
-    x = key in m
-    y = key in o
-    if not x and not y:
+  for col in COLUMN_DATA:
+    if COLUMN_DATA[col]['has_duplicates'] != True:
       continue
-    if not x:
-      m[key] = [o[key]]
-    if (x and y) and m[key][0] != o[key]:
-      m[key].append(o[key])
-  for key in OBJECT_DUPL_FIELDS:
-    m = main['object']
-    o = other['object']
-    x = key in m
-    y = key in o
-    if not x and not y:
+    m_field = get_field(main, col)
+    o_field = get_field(other, col)
+    if m_field == None and o_field == None:
       continue
-    if not x:
-      m[key] = [o[key]]
-    if (x and y) and m[key][0] != o[key]:
-      m[key].append(o[key])
+    if m_field == None:
+      set_field(main, col, [o_field])
+    if o_field == None:
+      continue
+    if o_field not in m_field:
+      append_field(main, col, o_field)
+  
   main['relation'].append(other['relation'])
 
 def load_data(data_folder):
   docs = {}
   row_num = 0
   for row in read_csv(os.path.join(data_folder, './BindingDB_All.tsv'), '\t'):
+    #print(row['subject']['uniprot'])
     try:
-      entry_name = row['subject']['UniProt (SwissProt) Entry Name of Target Chain']
-      primary_id = row['subject']['UniProt (SwissProt) Primary ID of Target Chain']
+      entry_name = row['subject']['uniprot']['id']
+      primary_id = row['subject']['uniprot']['accession']
     except KeyError:
       continue
 
@@ -128,16 +140,16 @@ def load_data(data_folder):
     if '_HUMAN' not in entry_name or primary_id == '':
       continue
 
-    row['_id'] = f"{row['object']['BindingDB MonomerID']}-{row['subject']['UniProt (SwissProt) Primary ID of Target Chain']}"
+    row['_id'] = f"{row['object']['monomer_id']}-{primary_id}"
     row['predicate'] = 'physically interacts with'
 
     if row['_id'] in docs:
       merge(docs[row['_id']], row)
     else:
       docs[row['_id']] = arrayify(row)
-    
-    # if row_num >= 15000:
-    #   break
+
+    if row_num >= 15000:
+      break
     row_num += 1
 
   for doc_id in docs:
@@ -150,17 +162,14 @@ def main():
   c = 0
   tim = time()
 
-  diffset = {}
-
   for row in load_data('./'):
-    if (row["_id"] == "3149-P17252"):
+    if (row["_id"] == "6221-P24941"):
       print('Writing record to file')
       with open("record.json", "w") as r:
         json.dump(row, r, indent=2)
 
   print(cnt)
   print(c)
-  print(ujson.dumps(diffset))
   print("Time to execute: ", time()-tim)
 
 if __name__ == '__main__':
