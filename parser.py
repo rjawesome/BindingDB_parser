@@ -18,12 +18,12 @@ def append_field(doc: dict, key: str, value: any):
   if COLUMN_DATA[key]['type'] == "split_comma" or COLUMN_DATA[key]['type'] == "split_semicolon":
     if isinstance(key_ref[keys[-1]][0], list) and value not in key_ref[keys[-1]]:
       key_ref[keys[-1]].append(value)
-    elif value != key_ref[keys[-1]]:
+    if not isinstance(key_ref[keys[-1]][0], list) and value != key_ref[keys[-1]]:
       key_ref[keys[-1]] = [key_ref[keys[-1]], value]
   else:
     if isinstance(key_ref[keys[-1]], list) and value not in key_ref[keys[-1]]:
       key_ref[keys[-1]].append(value)
-    elif value != key_ref[keys[-1]]:
+    if not isinstance(key_ref[keys[-1]], list) and value != key_ref[keys[-1]]:
       key_ref[keys[-1]] = [key_ref[keys[-1]], value]
 
 
@@ -147,8 +147,10 @@ def load_data(data_folder):
     else:
       docs[row['_id']] = arrayify(row)
 
-    if row_num >= 15000:
-      break
+    # if row_num >= 1200000:
+    #   break
+    # if row_num % 50000 == 0:
+    #   print(row_num)
     row_num += 1
 
   for doc_id in docs:
@@ -162,7 +164,7 @@ def main():
   tim = time()
 
   for row in load_data('./'):
-    if (row["_id"] == "6221-P24941"):
+    if (row["_id"] == "13533-P00533"):
       print('Writing record to file')
       with open("record.json", "w") as r:
         json.dump(row, r, indent=2)
