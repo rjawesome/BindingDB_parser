@@ -4,295 +4,295 @@
       "location": "relation.bindingdb_set_id",
       "type": "int",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "Ligand SMILES": {
       "location": "object.smiles",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "Ligand InChI": {
       "location": "object.inchi",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "Ligand InChI Key": {
       "location": "object.inchikey",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "BindingDB MonomerID": {
       "location": "object.monomer_id",
       "type": "int",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "BindingDB Ligand Name": {
       "location": "object.name",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": true
+      "relation": false
     },
     "Target Name Assigned by Curator or DataSource": {
       "location": "subject.name",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": true
+      "relation": false
     },
     "Target Source Organism According to Curator or DataSource": {
       "location": "subject.organism",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": true
+      "relation": false
     },
     "Ki (nM)": {
       "location": "relation.ki_nm",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "IC50 (nM)": {
       "location": "relation.ic50_nm",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "Kd (nM)": {
       "location": "relation.kd_nm",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "EC50 (nM)": {
       "location": "relation.ec50_nm",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "kon (M-1-s-1)": {
       "location": "relation.kon",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "koff (s-1)": {
       "location": "relation.koff",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "pH": {
       "location": "relation.ph",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "Temp (C)": {
       "location": "relation.temp_c",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "Curation/DataSource": {
       "location": "relation.curation_datasource",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "Article DOI": {
       "location": "relation.article_doi",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "PMID": {
       "location": "relation.pmid",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "PubChem AID": {
       "location": "relation.pubchem_aid",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "Patent Number": {
       "location": "relation.patent_number",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "Authors": {
       "location": "relation.authors",
       "type": "split_semicolon",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "Institution": {
       "location": "relation.institution",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "Link to Ligand in BindingDB": {
       "location": "object.bindingdb_link",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "Link to Target in BindingDB": {
       "location": "subject.bindingdb_link",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": true
+      "relation": false
     },
     "Link to Ligand-Target Pair in BindingDB": {
       "location": "relation.bindingdb_link",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "Ligand HET ID in PDB": {
       "location": "object.het_id_pdb",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": true
+      "relation": false
     },
     "PDB ID(s) for Ligand-Target Complex": {
       "location": "relation.pdb",
       "type": "split_comma",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "PubChem CID": {
       "location": "object.pubchem_cid",
       "type": "int",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "PubChem SID": {
       "location": "object.pubchem_sid",
       "type": "int",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "ChEBI ID of Ligand": {
       "location": "object.chebi",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "ChEMBL ID of Ligand": {
       "location": "object.chembl",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "DrugBank ID of Ligand": {
       "location": "object.drugbank",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "IUPHAR_GRAC ID of Ligand": {
       "location": "object.iuphar_grac_id",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "KEGG ID of Ligand": {
       "location": "object.kegg",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": true
+      "relation": false
     },
     "ZINC ID of Ligand": {
       "location": "object.zinc",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "Number of Protein Chains in Target (>1 implies a multichain complex)": {
       "location": "relation.num_protein_chains",
       "type": "int",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": true
     },
     "BindingDB Target Chain  Sequence": {
       "location": "subject.sequence",
       "type": "string",
       "uniprot_type": "all",
-      "has_duplicates": false
+      "relation": false
     },
     "PDB ID(s) of Target Chain": {
       "location": "subject.pdb",
       "type": "split_comma",
       "uniprot_type": "all",
-      "has_duplicates": true
+      "relation": false
     },
     "UniProt (SwissProt) Recommended Name of Target Chain": {
       "location": "subject.uniprot.fullname",
       "type": "string",
       "uniprot_type": "swissprot",
-      "has_duplicates": true
+      "relation": false
     },
     "UniProt (SwissProt) Entry Name of Target Chain": {
       "location": "subject.uniprot.id",
       "type": "string",
       "uniprot_type": "swissprot",
-      "has_duplicates": false
+      "relation": false
     },
     "UniProt (SwissProt) Primary ID of Target Chain": {
       "location": "subject.uniprot.accession",
       "type": "string",
       "uniprot_type": "swissprot",
-      "has_duplicates": false
+      "relation": false
     },
     "UniProt (SwissProt) Secondary ID(s) of Target Chain": {
       "location": "subject.uniprot.secondary_accession",
       "type": "split_comma",
       "uniprot_type": "swissprot",
-      "has_duplicates": false
+      "relation": false
     },
     "UniProt (SwissProt) Alternative ID(s) of Target Chain": {
       "location": "subject.uniprot.alternative_accession",
       "type": "split_comma",
       "uniprot_type": "swissprot",
-      "has_duplicates": false
+      "relation": false
     },
     "UniProt (TrEMBL) Submitted Name of Target Chain": {
       "location": "subject.uniprot.fullname",
       "type": "string",
       "uniprot_type": "trembl",
-      "has_duplicates": true
+      "relation": false
     },
     "UniProt (TrEMBL) Entry Name of Target Chain": {
       "location": "subject.uniprot.id",
       "type": "string",
       "uniprot_type": "trembl",
-      "has_duplicates": false
+      "relation": false
     },
     "UniProt (TrEMBL) Primary ID of Target Chain": {
       "location": "subject.uniprot.accession",
       "type": "string",
       "uniprot_type": "trembl",
-      "has_duplicates": false
+      "relation": false
     },
     "UniProt (TrEMBL) Secondary ID(s) of Target Chain": {
       "location": "subject.uniprot.secondary_accession",
       "type": "split_comma",
       "uniprot_type": "trembl",
-      "has_duplicates": false
+      "relation": false
     },
     "UniProt (TrEMBL) Alternative ID(s) of Target Chain": {
       "location": "subject.uniprot.alternative_accession",
       "type": "split_comma",
       "uniprot_type": "trembl",
-      "has_duplicates": false
+      "relation": false
     }
   }
 }

@@ -14,7 +14,18 @@ def append_field(doc: dict, key: str, value: any):
   key_ref = doc
   for i in keys[:len(keys)-1]:
     key_ref = key_ref[i]
-  key_ref[keys[-1]].append(value)
+  
+  if COLUMN_DATA[key]['type'] == "split_comma" or COLUMN_DATA[key]['type'] == "split_semicolon":
+    if isinstance(key_ref[keys[-1]][0], list) and value not in key_ref[keys[-1]]:
+      key_ref[keys[-1]].append(value)
+    elif value != key_ref[keys[-1]]:
+      key_ref[keys[-1]] = [key_ref[keys[-1]], value]
+  else:
+    if isinstance(key_ref[keys[-1]], list) and value not in key_ref[keys[-1]]:
+      key_ref[keys[-1]].append(value)
+    elif value != key_ref[keys[-1]]:
+      key_ref[keys[-1]] = [key_ref[keys[-1]], value]
+
 
 def set_field(doc: dict, key: str, value: any):
   key_path = COLUMN_DATA[key]['location']
@@ -92,33 +103,21 @@ def read_csv(file: str, delim: str):
           yield info_2
 
 def arrayify(obj: dict[str, any]):
-  for col in COLUMN_DATA:
-    if COLUMN_DATA[col]['has_duplicates'] != True:
-      continue
-    if COLUMN_DATA[col]['uniprot_type'] != 'all' and COLUMN_DATA[col]['uniprot_type'] != obj['subject']['uniprot']['type']:
-      continue
-    if get_field(obj, col) != None:
-      f = get_field(obj, col)
-      if isinstance(f, list):
-        f = f.copy()
-      set_field(obj, col, [f])
-  
   obj['relation'] = [obj['relation']]
   return obj
 
 def merge(main: dict[str, any], other: dict[str, any]):
   for col in COLUMN_DATA:
-    if COLUMN_DATA[col]['has_duplicates'] != True:
+    if COLUMN_DATA[col]['relation'] == True:
       continue
     m_field = get_field(main, col)
     o_field = get_field(other, col)
-    if m_field == None and o_field == None:
-      continue
-    if m_field == None:
-      set_field(main, col, [o_field])
     if o_field == None:
       continue
-    if o_field not in m_field:
+
+    if m_field == None:
+      set_field(main, col, o_field)
+    else:
       append_field(main, col, o_field)
   
   main['relation'].append(other['relation'])
@@ -148,8 +147,8 @@ def load_data(data_folder):
     else:
       docs[row['_id']] = arrayify(row)
 
-    # if row_num >= 15000:
-    #   break
+    if row_num >= 15000:
+      break
     row_num += 1
 
   for doc_id in docs:
