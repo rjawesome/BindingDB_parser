@@ -81,7 +81,7 @@ def read_csv(file: str, delim: str):
             else:
                 base = {'object': {}, 'subject': {}, 'relation': {}}
                 for j in range(37):
-                    if row[j] != None and row[j] != '' and row[j] != 'NULL':
+                    if row[j] is not None and row[j] != '' and row[j] != 'NULL':
                         val = process_field(BASE_COLS[j], row[j])
                         set_field(base, BASE_COLS[j], val)
 
@@ -93,7 +93,7 @@ def read_csv(file: str, delim: str):
                     info_1['subject']['uniprot']['type'] = 'swissprot'
                     info_2['subject']['uniprot']['type'] = 'trembl'
                     for k in range(12):
-                        if row[pos] != None and row[pos] != '':
+                        if row[pos] is not None and row[pos] != '':
                             val = process_field(
                                 REPEAT_SUBJECT_COLS[k], row[pos])
                             if COLUMN_DATA[REPEAT_SUBJECT_COLS[k]]['uniprot_type'] == 'swissprot':
@@ -115,14 +115,14 @@ def arrayify(obj: Dict[str, any]):
 
 def merge(main: Dict[str, any], other: Dict[str, any]):
     for col in COLUMN_DATA:
-        if COLUMN_DATA[col]['relation'] == True:
+        if COLUMN_DATA[col]['relation']:
             continue
         m_field = get_field(main, col)
         o_field = get_field(other, col)
-        if o_field == None:
+        if o_field is None:
             continue
 
-        if m_field == None:
+        if m_field is None:
             set_field(main, col, o_field)
         else:
             append_field(main, col, o_field)
@@ -141,7 +141,7 @@ def load_data(data_folder):
         except KeyError:
             continue
 
-        if entry_name == None or primary_id == None:
+        if entry_name is None or primary_id is None:
             continue
 
         if '_HUMAN' not in entry_name or primary_id == '':
