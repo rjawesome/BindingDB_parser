@@ -295,7 +295,7 @@ COLUMN_DATA = {
       "uniprot_type": "all",
       "relation": True
     },
-    "BindingDB Target Chain  Sequence": {
+    "BindingDB Target Chain Sequence": {
       "location": "subject.sequence",
       "type": "string",
       "uniprot_type": "all",
