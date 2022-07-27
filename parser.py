@@ -3,8 +3,75 @@ import json
 import os
 from typing import Dict
 
-REPEAT_SUBJECT_COLS = ['BindingDB Target Chain Sequence', 'PDB ID(s) of Target Chain', 'UniProt (SwissProt) Recommended Name of Target Chain', 'UniProt (SwissProt) Entry Name of Target Chain', 'UniProt (SwissProt) Primary ID of Target Chain', 'UniProt (SwissProt) Secondary ID(s) of Target Chain', 'UniProt (SwissProt) Alternative ID(s) of Target Chain', 'UniProt (TrEMBL) Submitted Name of Target Chain', 'UniProt (TrEMBL) Entry Name of Target Chain', 'UniProt (TrEMBL) Primary ID of Target Chain', 'UniProt (TrEMBL) Secondary ID(s) of Target Chain', 'UniProt (TrEMBL) Alternative ID(s) of Target Chain']
-BASE_COLS = ['BindingDB Reactant_set_id', 'Ligand SMILES', 'Ligand InChI', 'Ligand InChI Key', 'BindingDB MonomerID', 'BindingDB Ligand Name', 'Target Name Assigned by Curator or DataSource', 'Target Source Organism According to Curator or DataSource', 'Ki (nM)', 'IC50 (nM)', 'Kd (nM)', 'EC50 (nM)', 'kon (M-1-s-1)', 'koff (s-1)', 'pH', 'Temp (C)', 'Curation/DataSource', 'Article DOI', 'PMID', 'PubChem AID', 'Patent Number', 'Authors', 'Institution', 'Link to Ligand in BindingDB', 'Link to Target in BindingDB', 'Link to Ligand-Target Pair in BindingDB', 'Ligand HET ID in PDB', 'PDB ID(s) for Ligand-Target Complex', 'PubChem CID', 'PubChem SID', 'ChEBI ID of Ligand', 'ChEMBL ID of Ligand', 'DrugBank ID of Ligand', 'IUPHAR_GRAC ID of Ligand', 'KEGG ID of Ligand', 'ZINC ID of Ligand', 'Number of Protein Chains in Target (>1 implies a multichain complex)']
+"""
+Fields of the Imported CSV:
+
+- The array BASE_COLS defines the first columns in each row with data mainly pertaining to the compound.
+- A sequence of columns is repeated which creates the data for each protein in the row, which is stored in REPEAT_SUBJECT_COLS.
+"""
+REPEAT_SUBJECT_COLS = [
+    'BindingDB Target Chain Sequence',
+    'PDB ID(s) of Target Chain',
+    'UniProt (SwissProt) Recommended Name of Target Chain',
+    'UniProt (SwissProt) Entry Name of Target Chain',
+    'UniProt (SwissProt) Primary ID of Target Chain',
+    'UniProt (SwissProt) Secondary ID(s) of Target Chain',
+    'UniProt (SwissProt) Alternative ID(s) of Target Chain',
+    'UniProt (TrEMBL) Submitted Name of Target Chain',
+    'UniProt (TrEMBL) Entry Name of Target Chain',
+    'UniProt (TrEMBL) Primary ID of Target Chain',
+    'UniProt (TrEMBL) Secondary ID(s) of Target Chain',
+    'UniProt (TrEMBL) Alternative ID(s) of Target Chain'
+]
+BASE_COLS = [
+    'BindingDB Reactant_set_id',
+    'Ligand SMILES',
+    'Ligand InChI',
+    'Ligand InChI Key',
+    'BindingDB MonomerID',
+    'BindingDB Ligand Name',
+    'Target Name Assigned by Curator or DataSource',
+    'Target Source Organism According to Curator or DataSource',
+    'Ki (nM)',
+    'IC50 (nM)',
+    'Kd (nM)',
+    'EC50 (nM)',
+    'kon (M-1-s-1)',
+    'koff (s-1)',
+    'pH',
+    'Temp (C)',
+    'Curation/DataSource',
+    'Article DOI',
+    'PMID',
+    'PubChem AID',
+    'Patent Number',
+    'Authors',
+    'Institution',
+    'Link to Ligand in BindingDB',
+    'Link to Target in BindingDB',
+    'Link to Ligand-Target Pair in BindingDB',
+    'Ligand HET ID in PDB',
+    'PDB ID(s) for Ligand-Target Complex',
+    'PubChem CID',
+    'PubChem SID',
+    'ChEBI ID of Ligand',
+    'ChEMBL ID of Ligand',
+    'DrugBank ID of Ligand',
+    'IUPHAR_GRAC ID of Ligand',
+    'KEGG ID of Ligand',
+    'ZINC ID of Ligand',
+    'Number of Protein Chains in Target (>1 implies a multichain complex)'
+]
+
+
+"""
+To store where each column should go in the actual document, the mapping.json file exists. Under the "columns" key, there is a dictionary where each key corresponds to a column name in the csv. For each of these, four fields must be defined:
+
+- "location": defines the location of the column in the document, nested layers should be separated with a "."
+- "type": The type of data in the column. Supported types include "int", "string", "split_comma" (ie. "a,b,c"), and "split_semicolon" (ie "a;b;c")
+- "uniprot_type": This indicates whether the data is specifically applicable for "swissprot" or "trembl" documents, if it is applicable for both use "all"
+- "relation": This simply should store a boolean of whether this field is in the relation of the document, as the relation is treated a bit differently in terms of merging
+"""
 COLUMN_DATA = json.load(open("./mappings.json"))['columns']
 
 
