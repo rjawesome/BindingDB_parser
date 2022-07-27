@@ -232,23 +232,23 @@ def load_data(data_folder):
         yield docs[doc_id]
 
 
-def main():
-    from time import time
+# def main():
+#     from time import time
 
-    cnt = 0
-    c = 0
-    tim = time()
+#     cnt = 0
+#     c = 0
+#     tim = time()
 
-    for row in load_data('./'):
-        if (row["_id"] == "13533-P00533"):
-            print('Writing record to file')
-            with open("record.json", "w") as r:
-                json.dump(row, r, indent=2)
+#     for row in load_data('./'):
+#         if (row["_id"] == "13533-P00533"):
+#             print('Writing record to file')
+#             with open("record.json", "w") as r:
+#                 json.dump(row, r, indent=2)
 
-    print(cnt)
-    print(c)
-    print("Time to execute: ", time()-tim)
+#     print(cnt)
+#     print(c)
+#     print("Time to execute: ", time()-tim)
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
