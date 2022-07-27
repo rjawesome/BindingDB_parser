@@ -65,14 +65,309 @@ BASE_COLS = [
 
 
 """
-To store where each column should go in the actual document, the mapping.json file exists. Under the "columns" key, there is a dictionary where each key corresponds to a column name in the csv. For each of these, four fields must be defined:
+COLUMN_DATA stores where each column should go in the actual document. Each key corresponds to a column name in the csv. For each of these, four fields must be defined:
 
 - "location": defines the location of the column in the document, nested layers should be separated with a "."
 - "type": The type of data in the column. Supported types include "int", "string", "split_comma" (ie. "a,b,c"), and "split_semicolon" (ie "a;b;c")
 - "uniprot_type": This indicates whether the data is specifically applicable for "swissprot" or "trembl" documents, if it is applicable for both use "all"
 - "relation": This simply should store a boolean of whether this field is in the relation of the document, as the relation is treated a bit differently in terms of merging
 """
-COLUMN_DATA = json.load(open("./mappings.json"))['columns']
+COLUMN_DATA = {
+    "BindingDB Reactant_set_id": {
+      "location": "relation.bindingdb_set_id",
+      "type": "int",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "Ligand SMILES": {
+      "location": "object.smiles",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "Ligand InChI": {
+      "location": "object.inchi",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "Ligand InChI Key": {
+      "location": "object.inchikey",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "BindingDB MonomerID": {
+      "location": "object.monomer_id",
+      "type": "int",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "BindingDB Ligand Name": {
+      "location": "object.name",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "Target Name Assigned by Curator or DataSource": {
+      "location": "subject.name",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "Target Source Organism According to Curator or DataSource": {
+      "location": "subject.organism",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "Ki (nM)": {
+      "location": "relation.ki_nm",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "IC50 (nM)": {
+      "location": "relation.ic50_nm",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "Kd (nM)": {
+      "location": "relation.kd_nm",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "EC50 (nM)": {
+      "location": "relation.ec50_nm",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "kon (M-1-s-1)": {
+      "location": "relation.kon",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "koff (s-1)": {
+      "location": "relation.koff",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "pH": {
+      "location": "relation.ph",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "Temp (C)": {
+      "location": "relation.temp_c",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "Curation/DataSource": {
+      "location": "relation.curation_datasource",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "Article DOI": {
+      "location": "relation.article_doi",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "PMID": {
+      "location": "relation.pmid",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "PubChem AID": {
+      "location": "relation.pubchem_aid",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "Patent Number": {
+      "location": "relation.patent_number",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "Authors": {
+      "location": "relation.authors",
+      "type": "split_semicolon",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "Institution": {
+      "location": "relation.institution",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "Link to Ligand in BindingDB": {
+      "location": "object.bindingdb_link",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "Link to Target in BindingDB": {
+      "location": "subject.bindingdb_link",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "Link to Ligand-Target Pair in BindingDB": {
+      "location": "relation.bindingdb_link",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "Ligand HET ID in PDB": {
+      "location": "object.het_id_pdb",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "PDB ID(s) for Ligand-Target Complex": {
+      "location": "relation.pdb",
+      "type": "split_comma",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "PubChem CID": {
+      "location": "object.pubchem_cid",
+      "type": "int",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "PubChem SID": {
+      "location": "object.pubchem_sid",
+      "type": "int",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "ChEBI ID of Ligand": {
+      "location": "object.chebi",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "ChEMBL ID of Ligand": {
+      "location": "object.chembl",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "DrugBank ID of Ligand": {
+      "location": "object.drugbank",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "IUPHAR_GRAC ID of Ligand": {
+      "location": "object.iuphar_grac_id",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "KEGG ID of Ligand": {
+      "location": "object.kegg",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "ZINC ID of Ligand": {
+      "location": "object.zinc",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "Number of Protein Chains in Target (>1 implies a multichain complex)": {
+      "location": "relation.num_protein_chains",
+      "type": "int",
+      "uniprot_type": "all",
+      "relation": True
+    },
+    "BindingDB Target Chain  Sequence": {
+      "location": "subject.sequence",
+      "type": "string",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "PDB ID(s) of Target Chain": {
+      "location": "subject.pdb",
+      "type": "split_comma",
+      "uniprot_type": "all",
+      "relation": False
+    },
+    "UniProt (SwissProt) Recommended Name of Target Chain": {
+      "location": "subject.uniprot.fullname",
+      "type": "string",
+      "uniprot_type": "swissprot",
+      "relation": False
+    },
+    "UniProt (SwissProt) Entry Name of Target Chain": {
+      "location": "subject.uniprot.id",
+      "type": "string",
+      "uniprot_type": "swissprot",
+      "relation": False
+    },
+    "UniProt (SwissProt) Primary ID of Target Chain": {
+      "location": "subject.uniprot.accession",
+      "type": "string",
+      "uniprot_type": "swissprot",
+      "relation": False
+    },
+    "UniProt (SwissProt) Secondary ID(s) of Target Chain": {
+      "location": "subject.uniprot.secondary_accession",
+      "type": "split_comma",
+      "uniprot_type": "swissprot",
+      "relation": False
+    },
+    "UniProt (SwissProt) Alternative ID(s) of Target Chain": {
+      "location": "subject.uniprot.alternative_accession",
+      "type": "split_comma",
+      "uniprot_type": "swissprot",
+      "relation": False
+    },
+    "UniProt (TrEMBL) Submitted Name of Target Chain": {
+      "location": "subject.uniprot.fullname",
+      "type": "string",
+      "uniprot_type": "trembl",
+      "relation": False
+    },
+    "UniProt (TrEMBL) Entry Name of Target Chain": {
+      "location": "subject.uniprot.id",
+      "type": "string",
+      "uniprot_type": "trembl",
+      "relation": False
+    },
+    "UniProt (TrEMBL) Primary ID of Target Chain": {
+      "location": "subject.uniprot.accession",
+      "type": "string",
+      "uniprot_type": "trembl",
+      "relation": False
+    },
+    "UniProt (TrEMBL) Secondary ID(s) of Target Chain": {
+      "location": "subject.uniprot.secondary_accession",
+      "type": "split_comma",
+      "uniprot_type": "trembl",
+      "relation": False
+    },
+    "UniProt (TrEMBL) Alternative ID(s) of Target Chain": {
+      "location": "subject.uniprot.alternative_accession",
+      "type": "split_comma",
+      "uniprot_type": "trembl",
+      "relation": False
+    }
+}
 
 
 def append_field(doc: dict, key: str, value: any):
